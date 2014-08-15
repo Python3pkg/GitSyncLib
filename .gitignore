@@ -1,0 +1,9 @@
+.DS_Store
+*.pyc
+*.cfg
+*.ini
+MANIFEST
+dist
+src/GitSync.egg-info
+.coverage
+.tox
