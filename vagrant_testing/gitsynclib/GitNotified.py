@@ -36,10 +36,10 @@ class GitNotified:
             self.notifier = TerminalNotifier()
 
     def sync_failed(self):
-        self.notifer.notify('Sync Failed')
+        self.notifier.notify('Sync Failed')
 
     def sync_start(self, local_path, remote_path, remote_host):
-        self.notifer.notify(
+        self.notifier.notify(
             "Starting to sync %s and %s on %s" % (
                 local_path,
                 remote_path,
@@ -49,7 +49,7 @@ class GitNotified:
         )
 
     def sync_done(self, local_path, remote_path, remote_host):
-        self.notifer.notify(
+        self.notifier.notify(
             "Completed sync of %s and %s on %s" % (
                 local_path,
                 remote_path,
@@ -57,3 +57,6 @@ class GitNotified:
             ),
             title='GitSync'
         )
+
+    def notify(self, msg, title="GitSync"):
+        self.notifier.notify(msg, title)

@@ -30,7 +30,11 @@ class GitSync:
         self.remote_path = config['remote_path']
         self.remote_host = config['remote_host']
         self.remote_user = config['remote_user']
-        self.git_ignore_lines = config['git_ignore']
+
+        if 'git_ignore' in config:
+            self.git_ignore_lines = config['git_ignore']
+        else:
+            self.git_ignore_lines = []
 
         # Sort the git ignore lines.
         self.git_ignore_lines = sorted(self.git_ignore_lines)
@@ -351,7 +355,7 @@ def main():
 
     git_sync = GitSync(config, notifier)
 
-    if args.command == "initial-sync":
+    if args.command == "init":
         git_sync.run_initial_sync()
     elif args.command == 'sync':
         git_sync.run_sync()
