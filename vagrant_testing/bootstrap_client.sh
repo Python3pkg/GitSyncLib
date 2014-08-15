@@ -16,5 +16,5 @@ touch /home/vagrant/.ssh/known_hosts
 ssh-keyscan -t rsa,dsa 10.10.10.11 2>&1 | sort -u - /home/vagrant/.ssh/known_hosts > /home/vagrant/.ssh/tmp_hosts
 cat /home/vagrant/.ssh/tmp_hosts >> /home/vagrant/.ssh/known_hosts
 
-sudo easy_install -U distribute
-sudo pip install GitSync-0.1.2.tar.gz
+#sudo easy_install -U distribute
+#sudo pip install GitSyncLib-0.1.tar.gz

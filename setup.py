@@ -39,7 +39,7 @@ setup(
         'Topic :: Utilities',
     ],
     install_requires=[
-        "Fabric >= 1.8.0",
+        "Fabric >= 1.3.2",
         "PyYAML >= 3.10",
     ],
 )

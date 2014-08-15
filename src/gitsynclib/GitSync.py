@@ -281,7 +281,6 @@ class GitSync:
         )
         self.notify.sync_done(self.local_path, self.remote_path, self.remote_host)
 
-
     def run_sync(self):
 
         self.notify.sync_start(self.local_path, self.remote_path, self.remote_host)
