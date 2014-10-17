@@ -25,11 +25,18 @@ class GitSync:
 
         self.notify = notify
 
-        self.local_path = config['local_path']
+        self.local_path = os.path.expanduser(
+            os.path.expandvars(config['local_path'])
+        )
         self.local_branch = config['local_branch']
         self.remote_path = config['remote_path']
         self.remote_host = config['remote_host']
         self.remote_user = config['remote_user']
+
+        if len(os.path.split(self.local_path)) < 2:
+            abort(
+                "The local path appears to be bad: {0}".format(self.local_path)
+            )
 
         if 'git_ignore' in config:
             self.git_ignore_lines = config['git_ignore']
@@ -78,9 +85,11 @@ class GitSync:
                 for line in git_ignore_lines:
                     cmd.append("echo '{0}' >> .gitignore_new".format(line))
 
-                run(';'.join(cmd))
-
-                run('mv .gitignore_new .gitignore', shell=False)
+                if cmd:
+                    run(';'.join(cmd))
+                    run('mv .gitignore_new .gitignore', shell=False)
+                else:
+                    run("echo '' > .gitignore")
 
     @task
     def remote_has_modified_files(self, remote_path):
@@ -124,8 +133,49 @@ class GitSync:
         git_repo = os.path.join(remote_path, '.git')
         return git_repo
 
+    def check_local_path_case(self, path, full_path=None):
+        if not full_path:
+            full_path = path
+        (head, tail) = os.path.split(path)
+        if tail:
+            self.check_local_path_case(head, full_path)
+
+        if head == '/':
+            return True
+
+        if not os.path.isdir( head ):
+            return True
+
+        if not os.path.exists(os.path.join(head, tail)):
+            return True
+
+        if not tail in os.listdir(head):
+            abort(
+                "Your local path appears to be miss configured, maybe the check"
+                " to make sure upper and lower case letters are"
+                " correct: {0}".format(full_path)
+            )
+
+    def check_local_path_permissions(self, path, full_path=None):
+        if not full_path:
+            full_path = path
+        (head, tail) = os.path.split(path)
+        if os.path.isdir(head):
+            if not os.access(head, os.W_OK):
+                abort(
+                    (
+                        "Unable to write to {0}, that means your local"
+                        " path will not work. {1}"
+                    ).format(head, full_path)
+                )
+        else:
+            self.check_local_path_permissions(head, full_path)
+
     @task
     def get_local_git_clone(self, remote_path, local_path):
+        self.check_local_path_case(local_path)
+        self.check_local_path_permissions(local_path)
+
         local("git clone ssh://%s/%s %s" % (env.host, remote_path, local_path))
 
     @task
