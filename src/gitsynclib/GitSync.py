@@ -379,6 +379,16 @@ def parse_config():
     return yaml.safe_load(args.config_file)
 
 
+def setup_git_sync(config, notifier=None):
+
+    if not notifier:
+        notifier = GitNotified()
+
+    git_sync = GitSync(config, notifier)
+
+    return (git_sync, notifier)
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -399,11 +409,12 @@ def main():
 
     args = parser.parse_args()
 
+    if not args.config_file:
+        abort( "No yaml configuration file specified." )
+
     config = yaml.safe_load(args.config_file)
 
-    notifier = GitNotified()
-
-    git_sync = GitSync(config, notifier)
+    (git_sync, notifier) = setup_git_sync(config)
 
     if args.command == "init":
         git_sync.run_initial_sync()

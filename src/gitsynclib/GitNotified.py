@@ -15,7 +15,7 @@ class PyncNotifier:
 
     def notify(self, msg, title='GitSync'):
         from pync import Notifier
-        Notifier.notify(msg, title)
+        Notifier.notify(msg, title=title)
 
 
 class TerminalNotifier:

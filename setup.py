@@ -18,7 +18,7 @@ def read(*names, **kwargs):
 
 setup(
     name='GitSyncLib',
-    version="0.1.1",
+    version="0.1.3",
     license='MIT',
     description='GitSyncLib is a library that supports GitSync.',
     long_description="%s\n%s" % (read("README.rst"), re.sub(":obj:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst"))),
