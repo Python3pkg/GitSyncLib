@@ -143,13 +143,13 @@ class GitSync:
         if head == '/':
             return True
 
-        if not os.path.isdir( head ):
+        if not os.path.isdir(head):
             return True
 
         if not os.path.exists(os.path.join(head, tail)):
             return True
 
-        if not tail in os.listdir(head):
+        if tail not in os.listdir(head):
             abort(
                 "Your local path appears to be miss configured, maybe the check"
                 " to make sure upper and lower case letters are"
