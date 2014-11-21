@@ -277,13 +277,46 @@ class GitSync:
         self.send_local_changes_to_remote(self, remote_path, local_path, local_branch)
 
     def initial_sync(self, remote_path, local_path, local_branch, git_ignore_lines):
-        if not os.path.exists(local_path):
-            self.init(self, remote_path, local_path, local_branch, git_ignore_lines)
-        else:
-            self.update_git_ignore_file(self, remote_path, git_ignore_lines)
+        self.test_and_setup_local_path(
+            remote_path,
+            local_path,
+            local_branch,
+            git_ignore_lines
+        )
+        # if not os.path.exists(local_path):
+        #     self.init(self, remote_path, local_path, local_branch, git_ignore_lines)
+        # else:
+        #     self.update_git_ignore_file(self, remote_path, git_ignore_lines)
 
         self.send_remote_changes_to_local(self, remote_path, local_path)
         self.send_local_changes_to_remote(self, remote_path, local_path, local_branch)
+
+    def test_and_setup_local_path(self, remote_path, local_path, local_branch, git_ignore_lines):
+        if not os.path.exists(local_path):
+            self.init(self, remote_path, local_path, local_branch, git_ignore_lines)
+            return
+
+        # Test to see if the local path is just an empty directory.
+        wc_output = local("ls -1a {0} | wc -l".format(local_path), capture=True)
+        number_of_files = int(wc_output.stdout)
+        puts(number_of_files)
+        if number_of_files == 2:
+            local('rmdir {0}'.format(local_path))
+            self.init(self, remote_path, local_path, local_branch, git_ignore_lines)
+            return
+        elif number_of_files < 2:
+            raise Exception(
+                "Local directory exists, has less then 2 files in it, on"
+                " a POSIX operating system this makes not sense."
+            )
+
+        raise Exception(
+            (
+                "Local directory {0} exists already and can not work with a new"
+                " GitSync project."
+            ).format(local_path)
+        )
+
 
     @task
     def init(self, remote_path, local_path, local_branch, git_ignore_lines):
