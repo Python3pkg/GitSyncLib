@@ -17,8 +17,8 @@ if os.getenv('SPELLCHECK'):
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'GitSync'
-copyright = u'2014, Jachin Rupe'
+project = 'GitSync'
+copyright = '2014, Jachin Rupe'
 version = release = re.findall(
     'version="(.*)"',
     open(os.path.join(os.path.dirname(__file__), '../setup.py')).read()

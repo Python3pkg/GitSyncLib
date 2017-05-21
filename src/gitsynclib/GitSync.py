@@ -9,7 +9,7 @@ from fabric.utils import puts
 from fabric.contrib.files import exists
 from fabric.colors import cyan
 
-from GitNotified import GitNotified
+from .GitNotified import GitNotified
 
 
 class GitSync:
@@ -381,8 +381,8 @@ class GitSync:
             self.run_send_local_changes_to_remote()
         except Exception as e:
             print("sync failed.")
-            print(type(e))
-            print(e.args)
+            print((type(e)))
+            print((e.args))
             print(e)
             self.notify.sync_failed()
             raise

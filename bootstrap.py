@@ -12,9 +12,9 @@ if not os.path.exists('.tox/configure'):
     else:
         subprocess.check_call(['.tox/configure/bin/pip', 'install', 'jinja2', 'matrix'])
 if sys.platform == 'win32':
-    execfile('.tox/configure/Scripts/activate_this.py', dict(__file__='.tox/configure/Scripts/activate_this.py'))
+    exec(compile(open('.tox/configure/Scripts/activate_this.py').read(), '.tox/configure/Scripts/activate_this.py', 'exec'), dict(__file__='.tox/configure/Scripts/activate_this.py'))
 else:
-    execfile('.tox/configure/bin/activate_this.py', dict(__file__='.tox/configure/bin/activate_this.py'))
+    exec(compile(open('.tox/configure/bin/activate_this.py').read(), '.tox/configure/bin/activate_this.py', 'exec'), dict(__file__='.tox/configure/bin/activate_this.py'))
 import jinja2
 import matrix
 
@@ -25,7 +25,7 @@ jinja = jinja2.Environment(
     keep_trailing_newline=True
 )
 tox_environments = {}
-for alias, conf in matrix.from_file('setup.cfg').items():
+for alias, conf in list(matrix.from_file('setup.cfg').items()):
     python = conf['python_versions']
     deps = conf['dependencies']
     cover = {'false': False, 'true': True}[conf['coverage_flags'].lower()]
@@ -41,6 +41,6 @@ for alias, conf in matrix.from_file('setup.cfg').items():
 for name in os.listdir('conf'):
     with open(name, 'w') as fh:
         fh.write(jinja.get_template(name).render(tox_environments=tox_environments))
-    print("Wrote %s" % name)
+    print(("Wrote %s" % name))
 
 print("DONE.")
